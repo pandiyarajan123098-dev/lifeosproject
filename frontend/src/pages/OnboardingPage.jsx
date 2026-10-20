@@ -10,7 +10,6 @@ import {
   Code2,
   Target,
   Plus,
-  X,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { profileService } from '../services/profileService';
@@ -87,7 +86,6 @@ export default function OnboardingPage() {
     targetDate: '',
   });
 
-  // Step 1: Personal validation
   const validateStep1 = () => {
     if (!personal.firstName.trim()) {
       setError('Please provide your first name.');
@@ -97,17 +95,15 @@ export default function OnboardingPage() {
     return true;
   };
 
-  // Step 2: Interests validation
   const validateStep2 = () => {
     if (interests.length === 0) {
-      setError('Please select at least one interest.');
+      setError('Please select at least one interest area.');
       return false;
     }
     setError('');
     return true;
   };
 
-  // Step 3: Skills validation
   const validateStep3 = () => {
     if (skills.length === 0) {
       setError('Please select at least one skill.');
@@ -117,11 +113,10 @@ export default function OnboardingPage() {
     return true;
   };
 
-  // Step 4: Final submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!preferences.primaryGoal.trim()) {
-      setError('Please specify your primary goal.');
+      setError('Please specify your primary career goal.');
       return;
     }
 
@@ -147,7 +142,7 @@ export default function OnboardingPage() {
 
       await profileService.saveOnboarding(payload);
 
-      // Auto-generate today's first set of tasks based on newly submitted profile
+      // Auto-generate today's initial tasks
       try {
         await taskService.generateTasks(false);
       } catch (genErr) {
@@ -173,7 +168,6 @@ export default function OnboardingPage() {
     }
   };
 
-  // Interest toggling
   const toggleInterest = (name) => {
     setInterests((prev) =>
       prev.includes(name) ? prev.filter((i) => i !== name) : [...prev, name]
@@ -188,7 +182,6 @@ export default function OnboardingPage() {
     }
   };
 
-  // Skill toggling
   const toggleSkill = (name) => {
     setSkills((prev) => {
       const exists = prev.some((s) => s.name === name);
@@ -208,46 +201,48 @@ export default function OnboardingPage() {
     }
   };
 
+  const stepsList = [
+    { num: 1, label: 'Profile', icon: User },
+    { num: 2, label: 'Interests', icon: Heart },
+    { num: 3, label: 'Skills', icon: Code2 },
+    { num: 4, label: 'Schedule', icon: Target },
+  ];
+
   return (
-    <div className="min-h-screen bg-page flex flex-col justify-center py-10 px-4 sm:px-6 lg:px-8 animate-fade-in">
+    <div className="min-h-screen bg-page flex flex-col justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8 font-sans animate-fade-in overflow-x-hidden">
       <div className="max-w-2xl mx-auto w-full">
-        {/* Header Branding */}
-        <div className="text-center mb-8">
+        {/* Header */}
+        <div className="text-center mb-6 sm:mb-8">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-light text-primary-dark text-xs font-semibold mb-3">
             <Sparkles className="w-3.5 h-3.5 text-primary" />
             <span>Personalized Setup Wizard</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-mainText">
-            Welcome to LifeOS! Let's tailor your experience.
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-mainText tracking-tight">
+            Welcome to LifeOS!
           </h1>
           <p className="mt-1 text-xs text-secondaryText">
-            Step {step} of 4 &mdash; Answer a few questions so we can generate your optimal daily task plan.
+            Step {step} of 4 &mdash; Customize your learning roadmap.
           </p>
 
           {/* Stepper Progress Bar */}
-          <div className="mt-6 flex items-center justify-between relative max-w-md mx-auto">
-            <div className="absolute top-1/2 left-0 right-0 h-1 bg-cardBorder -translate-y-1/2 -z-0">
+          <div className="mt-6 flex items-center justify-between relative max-w-sm sm:max-w-md mx-auto px-2">
+            <div className="absolute top-1/2 left-4 right-4 h-1 bg-cardBorder -translate-y-1/2 -z-0">
               <div
                 className="h-full bg-primary transition-all duration-300"
                 style={{ width: `${((step - 1) / 3) * 100}%` }}
               ></div>
             </div>
 
-            {[
-              { num: 1, label: 'Profile', icon: User },
-              { num: 2, label: 'Interests', icon: Heart },
-              { num: 3, label: 'Skills', icon: Code2 },
-              { num: 4, label: 'Goals', icon: Target },
-            ].map((s) => {
+            {stepsList.map((s) => {
               const Icon = s.icon;
               const isDone = step > s.num;
               const isCurrent = step === s.num;
               return (
                 <div key={s.num} className="flex flex-col items-center relative z-10">
                   <div
-                    className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs transition-all ${
+                    className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-xs transition-all ${
                       isDone
-                        ? 'bg-primary text-white'
+                        ? 'bg-primary text-white shadow-soft'
                         : isCurrent
                         ? 'bg-white border-2 border-primary text-primary shadow-soft'
                         : 'bg-white border border-cardBorder text-gray-400'
@@ -256,7 +251,7 @@ export default function OnboardingPage() {
                     {isDone ? <Check className="w-4 h-4 stroke-[3]" /> : <Icon className="w-4 h-4" />}
                   </div>
                   <span
-                    className={`text-[11px] font-semibold mt-1.5 ${
+                    className={`text-[10px] sm:text-xs font-semibold mt-1.5 ${
                       isCurrent ? 'text-primary' : 'text-secondaryText'
                     }`}
                   >
@@ -269,14 +264,14 @@ export default function OnboardingPage() {
         </div>
 
         {/* Card Body */}
-        <div className="bg-white p-6 sm:p-8 rounded-2xl border border-cardBorder shadow-card">
-          {error && <ErrorMessage title="Notice" message={error} className="mb-6" />}
+        <div className="bg-white p-5 sm:p-8 rounded-card border border-cardBorder shadow-card">
+          {error && <ErrorMessage title="Setup Notice" message={error} className="mb-5" />}
 
           {/* Step 1: Personal Info */}
           {step === 1 && (
             <div className="space-y-4 animate-fade-in">
               <div>
-                <h2 className="text-lg font-bold text-mainText">Personal Information</h2>
+                <h2 className="text-base sm:text-lg font-bold text-mainText">Personal Profile</h2>
                 <p className="text-xs text-secondaryText">Tell us who you are so we can address you properly.</p>
               </div>
 
@@ -308,8 +303,8 @@ export default function OnboardingPage() {
                 />
                 <div className="sm:col-span-2">
                   <Input
-                    label="Education / Occupation"
-                    placeholder="e.g. Computer Science Student or Software Engineer"
+                    label="Occupation / Major"
+                    placeholder="e.g. Computer Science Student"
                     value={personal.occupation}
                     onChange={(e) => setPersonal({ ...personal, occupation: e.target.value })}
                   />
@@ -317,7 +312,7 @@ export default function OnboardingPage() {
               </div>
 
               <Input
-                label="Current Role / Title"
+                label="Current Role"
                 placeholder="e.g. Aspiring Full Stack Developer"
                 value={personal.currentRole}
                 onChange={(e) => setPersonal({ ...personal, currentRole: e.target.value })}
@@ -328,9 +323,10 @@ export default function OnboardingPage() {
                   onClick={() => {
                     if (validateStep1()) setStep(2);
                   }}
+                  className="w-full sm:w-auto"
                 >
                   Continue to Interests
-                  <ArrowRight className="w-4 h-4 ml-1" />
+                  <ArrowRight className="w-4 h-4 ml-1.5" />
                 </Button>
               </div>
             </div>
@@ -340,9 +336,9 @@ export default function OnboardingPage() {
           {step === 2 && (
             <div className="space-y-5 animate-fade-in">
               <div>
-                <h2 className="text-lg font-bold text-mainText">What areas interest you?</h2>
+                <h2 className="text-base sm:text-lg font-bold text-mainText">Your Growth Interests</h2>
                 <p className="text-xs text-secondaryText">
-                  Select all topics you want LifeOS to incorporate into your learning roadmap.
+                  Select subjects you want LifeOS to incorporate into your daily tasks.
                 </p>
               </div>
 
@@ -354,7 +350,7 @@ export default function OnboardingPage() {
                       key={item}
                       type="button"
                       onClick={() => toggleInterest(item)}
-                      className={`text-xs px-3.5 py-2 rounded-xl font-medium border transition-all flex items-center gap-1.5 ${
+                      className={`text-xs px-3 py-2 rounded-control font-medium border transition-all flex items-center gap-1.5 min-h-[38px] ${
                         isSelected
                           ? 'bg-primary text-white border-primary shadow-soft'
                           : 'bg-page text-mainText border-cardBorder hover:border-primary-300'
@@ -369,17 +365,17 @@ export default function OnboardingPage() {
 
               {/* Custom interest tag adder */}
               <div className="pt-2 border-t border-cardBorder/60">
-                <label className="block text-xs font-semibold text-mainText uppercase mb-2">
+                <label className="block text-xs font-semibold text-mainText uppercase tracking-wider mb-2">
                   Add Custom Interest
                 </label>
                 <div className="flex gap-2">
                   <input
                     type="text"
-                    placeholder="e.g. Quantum Computing, Game Design"
+                    placeholder="e.g. Cloud Security, Rust"
                     value={customInterest}
                     onChange={(e) => setCustomInterest(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && addCustomInterest(e)}
-                    className="flex-1 rounded-lg text-sm bg-white border border-cardBorder px-3 py-2 text-mainText focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="flex-1 rounded-control text-sm bg-white border border-cardBorder px-3 py-2 text-mainText focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   />
                   <Button size="sm" variant="secondary" onClick={addCustomInterest}>
                     <Plus className="w-4 h-4 mr-1" />
@@ -388,18 +384,19 @@ export default function OnboardingPage() {
                 </div>
               </div>
 
-              <div className="pt-4 flex items-center justify-between">
-                <Button variant="ghost" onClick={() => setStep(1)}>
-                  <ArrowLeft className="w-4 h-4 mr-1" />
+              <div className="pt-4 flex flex-col-reverse sm:flex-row items-center justify-between gap-3">
+                <Button variant="ghost" onClick={() => setStep(1)} className="w-full sm:w-auto">
+                  <ArrowLeft className="w-4 h-4 mr-1.5" />
                   Back
                 </Button>
                 <Button
                   onClick={() => {
                     if (validateStep2()) setStep(3);
                   }}
+                  className="w-full sm:w-auto"
                 >
                   Continue to Skills
-                  <ArrowRight className="w-4 h-4 ml-1" />
+                  <ArrowRight className="w-4 h-4 ml-1.5" />
                 </Button>
               </div>
             </div>
@@ -409,7 +406,7 @@ export default function OnboardingPage() {
           {step === 3 && (
             <div className="space-y-5 animate-fade-in">
               <div>
-                <h2 className="text-lg font-bold text-mainText">Your Current Skills</h2>
+                <h2 className="text-base sm:text-lg font-bold text-mainText">Current Skills</h2>
                 <p className="text-xs text-secondaryText">
                   Select technologies and tools you currently know or are actively learning.
                 </p>
@@ -423,7 +420,7 @@ export default function OnboardingPage() {
                       key={item}
                       type="button"
                       onClick={() => toggleSkill(item)}
-                      className={`text-xs px-3.5 py-2 rounded-xl font-medium border transition-all flex items-center gap-1.5 ${
+                      className={`text-xs px-3 py-2 rounded-control font-medium border transition-all flex items-center gap-1.5 min-h-[38px] ${
                         isSelected
                           ? 'bg-primary text-white border-primary shadow-soft'
                           : 'bg-page text-mainText border-cardBorder hover:border-primary-300'
@@ -438,17 +435,17 @@ export default function OnboardingPage() {
 
               {/* Custom skill adder */}
               <div className="pt-2 border-t border-cardBorder/60">
-                <label className="block text-xs font-semibold text-mainText uppercase mb-2">
+                <label className="block text-xs font-semibold text-mainText uppercase tracking-wider mb-2">
                   Add Custom Skill
                 </label>
                 <div className="flex gap-2">
                   <input
                     type="text"
-                    placeholder="e.g. Next.js, Docker, C++"
+                    placeholder="e.g. Next.js, Docker, Kotlin"
                     value={customSkill}
                     onChange={(e) => setCustomSkill(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && addCustomSkill(e)}
-                    className="flex-1 rounded-lg text-sm bg-white border border-cardBorder px-3 py-2 text-mainText focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="flex-1 rounded-control text-sm bg-white border border-cardBorder px-3 py-2 text-mainText focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   />
                   <Button size="sm" variant="secondary" onClick={addCustomSkill}>
                     <Plus className="w-4 h-4 mr-1" />
@@ -457,30 +454,31 @@ export default function OnboardingPage() {
                 </div>
               </div>
 
-              <div className="pt-4 flex items-center justify-between">
-                <Button variant="ghost" onClick={() => setStep(2)}>
-                  <ArrowLeft className="w-4 h-4 mr-1" />
+              <div className="pt-4 flex flex-col-reverse sm:flex-row items-center justify-between gap-3">
+                <Button variant="ghost" onClick={() => setStep(2)} className="w-full sm:w-auto">
+                  <ArrowLeft className="w-4 h-4 mr-1.5" />
                   Back
                 </Button>
                 <Button
                   onClick={() => {
                     if (validateStep3()) setStep(4);
                   }}
+                  className="w-full sm:w-auto"
                 >
-                  Continue to Goals & Time
-                  <ArrowRight className="w-4 h-4 ml-1" />
+                  Continue to Goals
+                  <ArrowRight className="w-4 h-4 ml-1.5" />
                 </Button>
               </div>
             </div>
           )}
 
-          {/* Step 4: Goals & Time Commitment */}
+          {/* Step 4: Goals & Time */}
           {step === 4 && (
             <form onSubmit={handleSubmit} className="space-y-4 animate-fade-in">
               <div>
-                <h2 className="text-lg font-bold text-mainText">Goals & Schedule</h2>
+                <h2 className="text-base sm:text-lg font-bold text-mainText">Goals & Schedule</h2>
                 <p className="text-xs text-secondaryText">
-                  Tell us how much time you have and your learning style for precise task sizing.
+                  Specify your primary goal and daily time budget so we calibrate your tasks correctly.
                 </p>
               </div>
 
@@ -564,14 +562,14 @@ export default function OnboardingPage() {
                 />
               </div>
 
-              <div className="pt-4 flex items-center justify-between">
-                <Button variant="ghost" onClick={() => setStep(3)}>
-                  <ArrowLeft className="w-4 h-4 mr-1" />
+              <div className="pt-4 flex flex-col-reverse sm:flex-row items-center justify-between gap-3">
+                <Button variant="ghost" onClick={() => setStep(3)} className="w-full sm:w-auto">
+                  <ArrowLeft className="w-4 h-4 mr-1.5" />
                   Back
                 </Button>
-                <Button type="submit" loading={loading}>
+                <Button type="submit" loading={loading} className="w-full sm:w-auto">
                   Complete Setup & Launch Dashboard
-                  <ArrowRight className="w-4 h-4 ml-1" />
+                  <ArrowRight className="w-4 h-4 ml-1.5" />
                 </Button>
               </div>
             </form>

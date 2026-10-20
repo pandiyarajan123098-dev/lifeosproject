@@ -22,15 +22,15 @@ export default function Select({
           {label} {required && <span className="text-red-500">*</span>}
         </label>
       )}
-      <div className="relative rounded-lg shadow-sm">
+      <div className="relative rounded-control shadow-sm">
         <select
           id={selectId}
           value={value}
           onChange={onChange}
           required={required}
-          className={`block w-full rounded-lg text-sm bg-white border py-2.5 px-3.5 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary disabled:bg-gray-100 disabled:text-gray-400 ${
+          className={`block w-full rounded-control text-sm bg-white border py-2.5 px-3.5 min-h-[42px] transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary disabled:bg-gray-100 disabled:text-gray-400 ${
             error
-              ? 'border-red-400 text-red-900 focus:ring-red-400 focus:border-red-400'
+              ? 'border-red-400 text-red-900 focus:ring-red-400/20 focus:border-red-500'
               : 'border-cardBorder text-mainText hover:border-primary-300'
           }`}
           {...props}
@@ -47,7 +47,7 @@ export default function Select({
           })}
         </select>
       </div>
-      {error && <p className="mt-1 text-xs text-red-600 animate-fade-in">{error}</p>}
+      {error && <p className="mt-1 text-xs text-red-600 animate-fade-in font-medium">{error}</p>}
       {helperText && !error && <p className="mt-1 text-xs text-secondaryText">{helperText}</p>}
     </div>
   );

@@ -16,29 +16,37 @@ export default function ProgressCard({
   };
 
   return (
-    <div className={`p-5 rounded-xl bg-white border border-cardBorder shadow-soft hover:shadow-card transition-shadow ${className}`}>
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-semibold uppercase tracking-wider text-secondaryText">
+    <div
+      className={`p-4 sm:p-5 rounded-card bg-white border border-cardBorder shadow-soft hover:shadow-card transition-all duration-200 ${className}`}
+    >
+      <div className="flex items-center justify-between mb-2 sm:mb-3">
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-secondaryText truncate">
           {title}
         </span>
         {Icon && (
-          <div className="w-9 h-9 rounded-lg bg-primary-light flex items-center justify-center text-primary shrink-0">
-            <Icon className="w-5 h-5" />
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-control bg-primary-light flex items-center justify-center text-primary shrink-0">
+            <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         )}
       </div>
 
-      <div className="flex items-baseline gap-2">
-        <h4 className="text-2xl font-bold text-mainText tracking-tight">{value}</h4>
+      <div className="flex flex-wrap items-baseline gap-2">
+        <h4 className="text-xl sm:text-2xl lg:text-3xl font-bold text-mainText tracking-tight">
+          {value}
+        </h4>
         {badgeText && (
-          <span className={`text-xs px-2 py-0.5 font-medium rounded-full border ${badgeColors[badgeVariant] || badgeColors.violet}`}>
+          <span
+            className={`text-[10px] sm:text-xs px-2 py-0.5 font-semibold rounded-full border shrink-0 ${
+              badgeColors[badgeVariant] || badgeColors.violet
+            }`}
+          >
             {badgeText}
           </span>
         )}
       </div>
 
       {subtitle && (
-        <p className="mt-1.5 text-xs text-secondaryText flex items-center gap-1">
+        <p className="mt-1.5 text-xs text-secondaryText leading-relaxed">
           {subtitle}
         </p>
       )}

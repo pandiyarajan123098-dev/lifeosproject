@@ -10,7 +10,7 @@ export default function ErrorMessage({
 }) {
   return (
     <div
-      className={`p-4 rounded-xl border border-red-200 bg-red-50/60 text-red-900 flex items-start gap-3.5 animate-fade-in ${className}`}
+      className={`p-4 rounded-control border border-red-200 bg-red-50/80 text-red-900 flex items-start gap-3.5 animate-fade-in ${className}`}
     >
       <div className="p-1 rounded-full bg-red-100 text-red-600 shrink-0 mt-0.5">
         <AlertCircle className="w-5 h-5" />

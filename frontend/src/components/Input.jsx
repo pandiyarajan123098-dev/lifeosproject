@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function Input({
   label,
@@ -12,7 +13,10 @@ export default function Input({
   rightIcon: RightIcon,
   ...props
 }) {
+  const [showPassword, setShowPassword] = useState(false);
   const inputId = id || label?.toLowerCase().replace(/\s+/g, '-');
+  const isPassword = type === 'password';
+  const effectiveType = isPassword ? (showPassword ? 'text' : 'password') : type;
 
   return (
     <div className={`w-full ${className}`}>
@@ -21,7 +25,7 @@ export default function Input({
           {label} {required && <span className="text-red-500">*</span>}
         </label>
       )}
-      <div className="relative rounded-lg shadow-sm">
+      <div className="relative rounded-control shadow-sm">
         {LeftIcon && (
           <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-secondaryText">
             <LeftIcon className="w-4 h-4" />
@@ -29,24 +33,34 @@ export default function Input({
         )}
         <input
           id={inputId}
-          type={type}
+          type={effectiveType}
           required={required}
-          className={`block w-full rounded-lg text-sm bg-white border transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary disabled:bg-gray-100 disabled:text-gray-400 placeholder:text-gray-400 ${
+          className={`block w-full rounded-control text-sm bg-white border transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary disabled:bg-gray-100 disabled:text-gray-400 placeholder:text-gray-400 ${
             LeftIcon ? 'pl-10' : 'pl-3.5'
-          } ${RightIcon ? 'pr-10' : 'pr-3.5'} py-2.5 ${
+          } ${isPassword || RightIcon ? 'pr-10' : 'pr-3.5'} py-2.5 min-h-[42px] ${
             error
-              ? 'border-red-400 text-red-900 focus:ring-red-400 focus:border-red-400'
+              ? 'border-red-400 text-red-900 focus:ring-red-400/20 focus:border-red-500'
               : 'border-cardBorder text-mainText hover:border-primary-300'
           }`}
           {...props}
         />
-        {RightIcon && (
+        {isPassword ? (
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-secondaryText hover:text-primary transition-colors focus:outline-none"
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+            tabIndex={-1}
+          >
+            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+          </button>
+        ) : RightIcon ? (
           <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-secondaryText">
             <RightIcon className="w-4 h-4" />
           </div>
-        )}
+        ) : null}
       </div>
-      {error && <p className="mt-1 text-xs text-red-600 animate-fade-in">{error}</p>}
+      {error && <p className="mt-1 text-xs text-red-600 animate-fade-in font-medium">{error}</p>}
       {helperText && !error && <p className="mt-1 text-xs text-secondaryText">{helperText}</p>}
     </div>
   );

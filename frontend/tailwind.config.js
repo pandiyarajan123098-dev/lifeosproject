@@ -9,6 +9,7 @@ export default {
       colors: {
         page: '#F8F7FF',
         card: '#FFFFFF',
+        cardBorder: '#DDD6FE',
         primary: {
           DEFAULT: '#7C3AED',
           dark: '#5B21B6',
@@ -26,16 +27,21 @@ export default {
         },
         mainText: '#1F2937',
         secondaryText: '#6B7280',
-        cardBorder: '#DDD6FE',
         success: '#16A34A',
+        warning: '#D97706',
+        error: '#DC2626',
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+        sans: ['Poppins', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
       },
       boxShadow: {
-        soft: '0 2px 15px -3px rgba(124, 58, 237, 0.07), 0 4px 6px -2px rgba(124, 58, 237, 0.05)',
-        card: '0 4px 20px -2px rgba(91, 33, 182, 0.06), 0 2px 4px -1px rgba(91, 33, 182, 0.04)',
-        hover: '0 10px 25px -5px rgba(124, 58, 237, 0.12), 0 8px 10px -6px rgba(124, 58, 237, 0.08)',
+        soft: '0 2px 12px -2px rgba(124, 58, 237, 0.06), 0 1px 3px -1px rgba(0, 0, 0, 0.05)',
+        card: '0 4px 20px -2px rgba(91, 33, 182, 0.06), 0 2px 6px -1px rgba(91, 33, 182, 0.04)',
+        hover: '0 10px 25px -4px rgba(124, 58, 237, 0.12), 0 4px 8px -2px rgba(124, 58, 237, 0.06)',
+      },
+      borderRadius: {
+        card: '1rem',
+        control: '0.625rem',
       },
     },
   },

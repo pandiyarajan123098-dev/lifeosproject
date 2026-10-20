@@ -9,9 +9,8 @@ import {
   LogOut,
   Save,
   Plus,
-  X,
   CheckCircle2,
-  Sparkles,
+  Settings,
 } from 'lucide-react';
 import DashboardLayout from '../layouts/DashboardLayout';
 import { useAuth } from '../context/AuthContext';
@@ -63,7 +62,7 @@ export default function ProfilePage() {
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
-  // Profile Form State
+  // Form State
   const [profile, setProfile] = useState({
     firstName: '',
     lastName: '',
@@ -126,7 +125,6 @@ export default function ProfilePage() {
     loadProfileData();
   }, []);
 
-  // Save General Profile and Preferences
   const handleSaveProfile = async (e) => {
     e.preventDefault();
     setSavingProfile(true);
@@ -148,7 +146,6 @@ export default function ProfilePage() {
         preferred_task_count: parseInt(profile.preferredTaskCount, 10),
       });
 
-      // Save updated interests & skills
       await profileService.updateInterests(interests);
       await profileService.updateSkills(skills);
 
@@ -168,7 +165,6 @@ export default function ProfilePage() {
     }
   };
 
-  // Toggle Interests
   const toggleInterest = (name) => {
     setInterests((prev) =>
       prev.includes(name) ? prev.filter((i) => i !== name) : [...prev, name]
@@ -183,7 +179,6 @@ export default function ProfilePage() {
     }
   };
 
-  // Toggle Skills
   const toggleSkill = (name) => {
     setSkills((prev) => {
       const exists = prev.some((s) => s.name === name);
@@ -203,14 +198,13 @@ export default function ProfilePage() {
     }
   };
 
-  // Update Password
   const handleUpdatePassword = async (e) => {
     e.preventDefault();
     setPasswordError('');
     setPasswordSuccess('');
 
     if (!passwordData.currentPassword || !passwordData.newPassword) {
-      setPasswordError('Please provide both current and new passwords.');
+      setPasswordError('Please provide both your current and new password.');
       return;
     }
 
@@ -232,7 +226,7 @@ export default function ProfilePage() {
       });
 
       if (res.success) {
-        setPasswordSuccess('Password changed securely.');
+        setPasswordSuccess('Password updated securely.');
         setPasswordData({ currentPassword: '', newPassword: '', confirmNewPassword: '' });
       }
     } catch (err) {
@@ -259,15 +253,15 @@ export default function ProfilePage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6 animate-fade-in max-w-4xl mx-auto">
+      <div className="space-y-6 sm:space-y-8 animate-fade-in max-w-4xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-cardBorder/60">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-cardBorder">
           <div>
-            <h1 className="text-2xl font-extrabold text-mainText tracking-tight flex items-center gap-2">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-mainText tracking-tight flex items-center gap-2.5">
               <User className="w-6 h-6 text-primary" />
               Profile & Settings
             </h1>
-            <p className="text-xs text-secondaryText mt-1">
+            <p className="text-xs sm:text-sm text-secondaryText mt-1">
               Manage your personal info, learning goals, interests, and account security.
             </p>
           </div>
@@ -276,9 +270,9 @@ export default function ProfilePage() {
             size="sm"
             variant="outline"
             onClick={handleLogout}
-            className="text-red-600 border-red-200 hover:bg-red-50 self-start sm:self-auto"
+            className="text-red-600 border-red-200 hover:bg-red-50 self-start sm:self-auto text-xs"
           >
-            <LogOut className="w-4 h-4 mr-1.5" />
+            <LogOut className="w-3.5 h-3.5 mr-1.5" />
             Log Out
           </Button>
         </div>
@@ -286,20 +280,22 @@ export default function ProfilePage() {
         {error && <ErrorMessage title="Profile Notice" message={error} />}
 
         {successMsg && (
-          <div className="p-3.5 rounded-xl bg-green-50 border border-green-200 text-green-900 text-xs flex items-center justify-between animate-fade-in">
+          <div className="p-3.5 sm:p-4 rounded-control bg-green-50 border border-green-200 text-green-900 text-xs sm:text-sm flex items-center justify-between animate-fade-in shadow-soft">
             <span className="flex items-center gap-2 font-medium">
-              <CheckCircle2 className="w-4 h-4 text-success" />
+              <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
               {successMsg}
             </span>
-            <button onClick={() => setSuccessMsg('')} className="text-green-700 font-bold ml-2">✕</button>
+            <button onClick={() => setSuccessMsg('')} className="text-green-700 font-bold ml-2 p-1">
+              ✕
+            </button>
           </div>
         )}
 
-        {/* Form: Personal Info & Goals */}
+        {/* Profile and Preferences Form */}
         <form onSubmit={handleSaveProfile} className="space-y-6">
           {/* Card 1: Personal Details */}
-          <div className="p-6 rounded-2xl bg-white border border-cardBorder shadow-soft space-y-4">
-            <h2 className="text-base font-bold text-mainText flex items-center gap-2 border-b border-cardBorder pb-3">
+          <div className="p-5 sm:p-6 rounded-card bg-white border border-cardBorder shadow-soft space-y-4">
+            <h2 className="text-base font-bold text-mainText flex items-center gap-2 pb-3 border-b border-cardBorder/60">
               <User className="w-4 h-4 text-primary" />
               Personal Information
             </h2>
@@ -327,7 +323,7 @@ export default function ProfilePage() {
               />
               <div className="sm:col-span-2">
                 <Input
-                  label="Education / Occupation"
+                  label="Occupation / Education"
                   value={profile.occupation}
                   onChange={(e) => setProfile({ ...profile, occupation: e.target.value })}
                 />
@@ -336,10 +332,10 @@ export default function ProfilePage() {
           </div>
 
           {/* Card 2: Goals & Schedule */}
-          <div className="p-6 rounded-2xl bg-white border border-cardBorder shadow-soft space-y-4">
-            <h2 className="text-base font-bold text-mainText flex items-center gap-2 border-b border-cardBorder pb-3">
+          <div className="p-5 sm:p-6 rounded-card bg-white border border-cardBorder shadow-soft space-y-4">
+            <h2 className="text-base font-bold text-mainText flex items-center gap-2 pb-3 border-b border-cardBorder/60">
               <Target className="w-4 h-4 text-primary" />
-              Goals & Time Budget
+              Goals & Schedule Calibration
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -411,7 +407,7 @@ export default function ProfilePage() {
               />
 
               <Input
-                label="Target Date"
+                label="Target Completion Date"
                 type="date"
                 value={profile.targetDate}
                 onChange={(e) => setProfile({ ...profile, targetDate: e.target.value })}
@@ -420,8 +416,8 @@ export default function ProfilePage() {
           </div>
 
           {/* Card 3: Interests */}
-          <div className="p-6 rounded-2xl bg-white border border-cardBorder shadow-soft space-y-4">
-            <h2 className="text-base font-bold text-mainText flex items-center gap-2 border-b border-cardBorder pb-3">
+          <div className="p-5 sm:p-6 rounded-card bg-white border border-cardBorder shadow-soft space-y-4">
+            <h2 className="text-base font-bold text-mainText flex items-center gap-2 pb-3 border-b border-cardBorder/60">
               <Heart className="w-4 h-4 text-primary" />
               Manage Interests
             </h2>
@@ -434,7 +430,7 @@ export default function ProfilePage() {
                     key={item}
                     type="button"
                     onClick={() => toggleInterest(item)}
-                    className={`text-xs px-3.5 py-1.5 rounded-xl font-medium border transition-all ${
+                    className={`text-xs px-3 py-1.5 rounded-control font-medium border transition-all ${
                       isSelected
                         ? 'bg-primary text-white border-primary shadow-soft'
                         : 'bg-page text-mainText border-cardBorder hover:border-primary-300'
@@ -453,7 +449,7 @@ export default function ProfilePage() {
                 value={customInterest}
                 onChange={(e) => setCustomInterest(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && addCustomInterest(e)}
-                className="flex-1 rounded-lg text-sm bg-page border border-cardBorder px-3 py-2 text-mainText focus:outline-none focus:ring-2 focus:ring-primary"
+                className="flex-1 rounded-control text-sm bg-page border border-cardBorder px-3 py-2 text-mainText focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               />
               <Button size="sm" variant="secondary" onClick={addCustomInterest}>
                 <Plus className="w-4 h-4 mr-1" />
@@ -463,8 +459,8 @@ export default function ProfilePage() {
           </div>
 
           {/* Card 4: Skills */}
-          <div className="p-6 rounded-2xl bg-white border border-cardBorder shadow-soft space-y-4">
-            <h2 className="text-base font-bold text-mainText flex items-center gap-2 border-b border-cardBorder pb-3">
+          <div className="p-5 sm:p-6 rounded-card bg-white border border-cardBorder shadow-soft space-y-4">
+            <h2 className="text-base font-bold text-mainText flex items-center gap-2 pb-3 border-b border-cardBorder/60">
               <Code2 className="w-4 h-4 text-primary" />
               Manage Skills
             </h2>
@@ -477,7 +473,7 @@ export default function ProfilePage() {
                     key={item}
                     type="button"
                     onClick={() => toggleSkill(item)}
-                    className={`text-xs px-3.5 py-1.5 rounded-xl font-medium border transition-all ${
+                    className={`text-xs px-3 py-1.5 rounded-control font-medium border transition-all ${
                       isSelected
                         ? 'bg-primary text-white border-primary shadow-soft'
                         : 'bg-page text-mainText border-cardBorder hover:border-primary-300'
@@ -496,7 +492,7 @@ export default function ProfilePage() {
                 value={customSkill}
                 onChange={(e) => setCustomSkill(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && addCustomSkill(e)}
-                className="flex-1 rounded-lg text-sm bg-page border border-cardBorder px-3 py-2 text-mainText focus:outline-none focus:ring-2 focus:ring-primary"
+                className="flex-1 rounded-control text-sm bg-page border border-cardBorder px-3 py-2 text-mainText focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               />
               <Button size="sm" variant="secondary" onClick={addCustomSkill}>
                 <Plus className="w-4 h-4 mr-1" />
@@ -507,24 +503,24 @@ export default function ProfilePage() {
 
           {/* Save Profile Button */}
           <div className="flex justify-end">
-            <Button type="submit" loading={savingProfile} size="lg">
+            <Button type="submit" loading={savingProfile} size="lg" className="w-full sm:w-auto">
               <Save className="w-4 h-4 mr-2" />
               Save Profile Changes
             </Button>
           </div>
         </form>
 
-        {/* Card 5: Change Password */}
-        <div className="p-6 rounded-2xl bg-white border border-cardBorder shadow-soft space-y-4">
-          <h2 className="text-base font-bold text-mainText flex items-center gap-2 border-b border-cardBorder pb-3">
+        {/* Card 5: Security / Password Change */}
+        <div id="settings" className="p-5 sm:p-6 rounded-card bg-white border border-cardBorder shadow-soft space-y-4">
+          <h2 className="text-base font-bold text-mainText flex items-center gap-2 pb-3 border-b border-cardBorder/60">
             <Lock className="w-4 h-4 text-primary" />
             Security & Password Update
           </h2>
 
-          {passwordError && <ErrorMessage title="Security Alert" message={passwordError} />}
+          {passwordError && <ErrorMessage title="Security Notice" message={passwordError} />}
           {passwordSuccess && (
-            <div className="p-3.5 rounded-xl bg-green-50 border border-green-200 text-green-900 text-xs flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-success" />
+            <div className="p-3.5 sm:p-4 rounded-control bg-green-50 border border-green-200 text-green-900 text-xs sm:text-sm flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
               {passwordSuccess}
             </div>
           )}
@@ -564,8 +560,8 @@ export default function ProfilePage() {
               }
             />
 
-            <Button type="submit" variant="outline" loading={savingPassword}>
-              Update Password
+            <Button type="submit" variant="outline" loading={savingPassword} className="w-full sm:w-auto">
+              Update Password Securely
             </Button>
           </form>
         </div>

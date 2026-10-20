@@ -60,7 +60,6 @@ export default function RegisterPage() {
     setLoading(true);
     try {
       await register(formData.fullName, formData.email, formData.password, formData.confirmPassword);
-      // New user registration always redirects to onboarding
       navigate('/onboarding');
     } catch (err) {
       setServerError(
@@ -72,29 +71,29 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-page flex flex-col justify-center py-12 sm:px-6 lg:px-8 animate-fade-in">
+    <div className="min-h-screen bg-page flex flex-col justify-center py-10 px-4 sm:px-6 lg:px-8 font-sans animate-fade-in">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <Link to="/" className="inline-flex items-center gap-2.5">
-          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-soft">
+        <Link to="/" className="inline-flex items-center gap-2.5 focus:outline-none">
+          <div className="w-10 h-10 rounded-control bg-primary flex items-center justify-center text-white shadow-soft">
             <Sparkles className="w-5 h-5" />
           </div>
-          <span className="text-2xl font-extrabold text-mainText">
+          <span className="text-2xl font-extrabold text-mainText tracking-tight">
             Life<span className="text-primary">OS</span>
           </span>
         </Link>
-        <h2 className="mt-4 text-2xl font-bold text-mainText">Create your free account</h2>
+        <h2 className="mt-4 text-xl sm:text-2xl font-bold text-mainText">Create your free account</h2>
         <p className="mt-1 text-xs text-secondaryText">
           Start generating personalized daily productivity tasks in under 2 minutes.
         </p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-6 sm:px-10 rounded-2xl border border-cardBorder shadow-card">
+      <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white py-8 px-5 sm:px-8 rounded-card border border-cardBorder shadow-card">
           {serverError && (
             <ErrorMessage
-              title="Registration Error"
+              title="Registration Notice"
               message={serverError}
-              className="mb-6"
+              className="mb-5"
             />
           )}
 
@@ -147,14 +146,14 @@ export default function RegisterPage() {
             <div className="pt-2">
               <Button type="submit" loading={loading} className="w-full">
                 Create Account & Continue
-                <ArrowRight className="w-4 h-4 ml-1" />
+                <ArrowRight className="w-4 h-4 ml-1.5" />
               </Button>
             </div>
           </form>
 
-          <div className="mt-6 text-center text-xs text-secondaryText">
+          <div className="mt-6 text-center text-xs text-secondaryText border-t border-cardBorder/60 pt-4">
             Already have an account?{' '}
-            <Link to="/login" className="font-semibold text-primary hover:text-primary-dark">
+            <Link to="/login" className="font-semibold text-primary hover:text-primary-dark ml-1">
               Log in here
             </Link>
           </div>

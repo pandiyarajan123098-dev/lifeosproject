@@ -5,10 +5,8 @@ import {
   Search,
   Filter,
   CheckCircle2,
-  Circle,
-  Tag,
   Clock,
-  RefreshCw,
+  RotateCcw,
 } from 'lucide-react';
 import DashboardLayout from '../layouts/DashboardLayout';
 import { taskService } from '../services/taskService';
@@ -85,7 +83,6 @@ export default function TaskHistoryPage() {
 
   const dates = Object.keys(groupedTasks).sort((a, b) => b.localeCompare(a));
 
-  // Quick lookup for daily progress snapshots
   const progressMap = dailyProgress.reduce((map, p) => {
     map[p.progress_date] = p;
     return map;
@@ -93,26 +90,24 @@ export default function TaskHistoryPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6 animate-fade-in max-w-5xl mx-auto">
+      <div className="space-y-6 sm:space-y-8 animate-fade-in max-w-5xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-cardBorder/60">
-          <div>
-            <h1 className="text-2xl font-extrabold text-mainText tracking-tight flex items-center gap-2">
-              <History className="w-6 h-6 text-primary" />
-              Task Progress History
-            </h1>
-            <p className="text-xs text-secondaryText mt-1">
-              Review your historical task logs, past assignments, and verified completion rates.
-            </p>
-          </div>
+        <div className="pb-4 border-b border-cardBorder">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-mainText tracking-tight flex items-center gap-2.5">
+            <History className="w-6 h-6 text-primary" />
+            Task Progress History
+          </h1>
+          <p className="text-xs sm:text-sm text-secondaryText mt-1">
+            Review your historical activity logs, past tasks, and verified completion rates.
+          </p>
         </div>
 
         {/* Filter Controls Card */}
         <form
           onSubmit={handleApplyFilters}
-          className="p-5 rounded-2xl bg-white border border-cardBorder shadow-soft space-y-4"
+          className="p-5 sm:p-6 rounded-card bg-white border border-cardBorder shadow-soft space-y-4"
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
             <Input
               placeholder="Search title or category..."
               leftIcon={Search}
@@ -146,29 +141,30 @@ export default function TaskHistoryPage() {
             />
           </div>
 
-          <div className="flex items-center justify-end gap-2 pt-1">
-            <Button size="sm" variant="ghost" onClick={handleResetFilters}>
+          <div className="flex flex-wrap items-center justify-end gap-2.5 pt-1">
+            <Button size="sm" variant="ghost" onClick={handleResetFilters} className="text-xs">
+              <RotateCcw className="w-3.5 h-3.5 mr-1" />
               Reset Filters
             </Button>
-            <Button size="sm" type="submit">
-              <Filter className="w-3.5 h-3.5 mr-1" />
+            <Button size="sm" type="submit" className="text-xs">
+              <Filter className="w-3.5 h-3.5 mr-1.5" />
               Apply Filters
             </Button>
           </div>
         </form>
 
-        {error && <ErrorMessage title="History Error" message={error} onRetry={fetchHistory} />}
+        {error && <ErrorMessage title="History Notice" message={error} onRetry={fetchHistory} />}
 
         {loading ? (
           <LoadingState message="Loading your task history..." />
         ) : dates.length === 0 ? (
-          <div className="p-12 text-center rounded-2xl border border-dashed border-cardBorder bg-white shadow-soft">
+          <div className="p-8 sm:p-12 text-center rounded-card border border-dashed border-cardBorder bg-white shadow-soft">
             <History className="w-10 h-10 text-gray-400 mx-auto mb-3" />
-            <h3 className="text-base font-bold text-mainText">No history found</h3>
-            <p className="text-xs text-secondaryText max-w-md mx-auto mt-1">
+            <h3 className="text-base sm:text-lg font-bold text-mainText">No history found</h3>
+            <p className="text-xs sm:text-sm text-secondaryText max-w-md mx-auto mt-1 leading-relaxed">
               {search || startDate || endDate || status !== 'all'
-                ? 'No past tasks match your search criteria. Try resetting filters.'
-                : 'Complete and submit tasks from your dashboard to record your timeline.'}
+                ? 'No past tasks match your search criteria. Try adjusting or resetting filters.'
+                : 'Complete and submit daily tasks to build your activity history.'}
             </p>
           </div>
         ) : (
@@ -183,17 +179,17 @@ export default function TaskHistoryPage() {
               return (
                 <div
                   key={dateStr}
-                  className="bg-white rounded-2xl border border-cardBorder shadow-soft overflow-hidden"
+                  className="bg-white rounded-card border border-cardBorder shadow-soft overflow-hidden"
                 >
                   {/* Date Header Strip */}
-                  <div className="p-4 bg-page border-b border-cardBorder flex flex-wrap items-center justify-between gap-3">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-primary-light text-primary flex items-center justify-center font-bold text-xs">
+                  <div className="p-4 sm:p-4.5 bg-page border-b border-cardBorder flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-control bg-primary-light text-primary flex items-center justify-center font-bold text-xs shrink-0 border border-primary-200">
                         <Calendar className="w-4 h-4" />
                       </div>
                       <div>
-                        <h3 className="text-sm font-bold text-mainText">{dateStr}</h3>
-                        <p className="text-xs text-secondaryText">
+                        <h3 className="text-sm sm:text-base font-bold text-mainText">{dateStr}</h3>
+                        <p className="text-xs text-secondaryText font-medium">
                           {completed} of {total} tasks completed
                         </p>
                       </div>
@@ -201,14 +197,14 @@ export default function TaskHistoryPage() {
 
                     <div className="flex items-center gap-3">
                       {snapshot && (
-                        <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200">
+                        <span className="text-[10px] sm:text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200">
                           Submitted Snapshot
                         </span>
                       )}
                       <div className="flex items-center gap-2">
-                        <div className="w-24 h-2 rounded-full bg-primary-light overflow-hidden">
+                        <div className="w-20 sm:w-28 h-2 rounded-full bg-primary-light overflow-hidden">
                           <div
-                            className="h-full bg-primary rounded-full"
+                            className="h-full bg-primary rounded-full transition-all"
                             style={{ width: `${percentage}%` }}
                           ></div>
                         </div>
@@ -218,7 +214,7 @@ export default function TaskHistoryPage() {
                   </div>
 
                   {/* Tasks in this Date */}
-                  <div className="p-4 space-y-3">
+                  <div className="p-4 sm:p-5 space-y-3">
                     {dayTasks.map((task) => (
                       <TaskCard
                         key={task.id}
